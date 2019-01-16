@@ -28,6 +28,7 @@
               label-width="100px"
               class="demo-ruleForm"
               label-position="top"
+              id="addusers"
             >
 
               <el-form-item label="用户名" prop="user" >
@@ -41,8 +42,8 @@
               </el-form-item>
                <el-form-item label="选择用户组" prop="group">
                   <el-select v-model="ruleForm2.group" placeholder="选择用户组">
-                    <el-option label="管理员" value="management"></el-option>
-                    <el-option label="普通用户" value="user"></el-option>
+                    <el-option label="管理员" value="管理员"></el-option>
+                    <el-option label="普通用户" value="普通用户"></el-option>
                   </el-select>
               </el-form-item>
 
@@ -127,8 +128,32 @@ export default {
         //valid参数表示验证的结果，true表示验证通过，false验证失败
         if (valid) {
           // alert("表单验证成功"); // 
-          //发起ajax请求去后端做数据库的验证
+          //发起ajax请求去后端做数据库添加用户
+            // 1.获取用户信息
           console.log(this.ruleForm2)
+            // 2.使用axios发送请求到后端api: http://127.0.0.1:3000/users/useradd
+            this.axios.post(
+              this.api+"/user/useradd",
+              this.qs.stringify(this.ruleForm2)//使用q处理post的参数
+            ).then(result=>{
+              console.log("服务器成功返回的结果",result);
+            //3.将后端响应回来的结果渲染到页面上
+            if(result.data.isOK){
+              //添加成功
+              this.$message({
+                message:result.data.msg,
+                type:"success"
+              });
+              setTimeout(()=>{
+                this.$router.push("/Itunes");
+              },100);
+            }else{
+              //添加失败
+              this.$message.error("服务器错误返回的信息",err);
+            }
+            }).catch(err=>{
+              console.error("服务器错误返回的信息",err);
+            });
           //使用路由对象的push实现跳转
           // this.$router.push("/home");//使用路由对象的push实现跳转
         } else {
@@ -157,15 +182,6 @@ export default {
 .el-form--label-top .el-form-item__label{
   padding:0;
 }
-
-/* 输入框的宽度 */
-.el-input{
-  width: 30%
-}
-.el-input--suffix{
-  width: 60%
-}
-
 </style>
 
 

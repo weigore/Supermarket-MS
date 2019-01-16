@@ -163,4 +163,27 @@ body > .el-container {
   line-height: 320px;
 }
 
-
+/* 输入框的宽度 */
+.el-input{
+  width: 30%
+}
+.el-input--suffix{
+  width: 60%
+}
+/* 模态框 */
+#mydialog .el-input{
+  width: 80%
+}
+/* 用户增加页面的输入框宽度 */
+/* #goodadd .el-input */
+/* #addusers,{
+  width: 30%
+} */
+/* 商品管理页 */
+#searchBox{
+  border: 1px solid #ccc;
+  height: 1px;
+}
+#goodsMsgInput .el-input{
+  width:100%
+}

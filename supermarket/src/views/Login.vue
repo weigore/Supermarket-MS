@@ -1,35 +1,59 @@
 <template>
-   <!-- 卡片组件： -->
-   <div id="box">
-        <el-card class="box-card" id="login">
-        <div slot="header" class="clearfix">
-          <h2>用户登录</h2>
-        </div>
-        <div class="text item">
-          <!-- 表单内容：表单输入框 -->
-          <el-form :model="ruleForm2" 
-          status-icon 
-          :rules="rules2" 
-          ref="ruleForm2" 
-          label-width="100px" 
-          class="demo-ruleForm">
-        
-          <el-form-item label="用户名" prop="user">
-            <el-input type="text" v-model="ruleForm2.user" autocomplete="off"></el-input>
+  <!-- 卡片组件： -->
+  <div id="box">
+    <el-card
+      class="box-card"
+      id="login"
+    >
+      <div
+        slot="header"
+        class="clearfix"
+      >
+        <h2>用户登录</h2>
+      </div>
+      <div class="text item">
+        <!-- 表单内容：表单输入框 -->
+        <el-form
+          :model="ruleForm2"
+          status-icon
+          :rules="rules2"
+          ref="ruleForm2"
+          label-width="100px"
+          class="demo-ruleForm"
+        >
+
+          <el-form-item
+            label="用户名"
+            prop="username"
+          >
+            <el-input
+              type="text"
+              v-model="ruleForm2.username"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="ruleForm2.pass" autocomplete="off"></el-input>
+          <el-form-item
+            label="密码"
+            prop="userpwd"
+          >
+            <el-input
+              type="password"
+              v-model="ruleForm2.userpwd"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm2')">登陆</el-button>
+            <el-button
+              type="primary"
+              @click="submitForm('ruleForm2')"
+            >登陆</el-button>
             <el-button @click="resetForm('ruleForm2')">重置</el-button>
           </el-form-item>
         </el-form>
-        </div>
-      </el-card>
-    
-   </div>
+      </div>
+    </el-card>
 
+  </div>
 
 </template>
 
@@ -41,18 +65,18 @@ export default {
     return {
       //数据对象
       ruleForm2: {
-        pass: "",
-        user: ""
+        userpwd: "",
+        username: ""
       },
       //验证规则
       rules2: {
-        user: [
+        username: [
           // //required: true 必填     trigger: 'blur' 失去焦点的事件触发     message: "出错信息"
           { required: true, trigger: "blur", message: "请输入用户名" }, //非空验证
           { min: 6, max: 18, trigger: "blur", message: "用户长度在6到18个字符" } //验证长度值
         ],
 
-        pass: [
+        userpwd: [
           { required: true, message: "请输入用户名", trigger: "blur" },
           { min: 6, max: 12, message: "密码长度不对", trigger: "blur" }
         ]
@@ -66,9 +90,33 @@ export default {
         //valid参数表示验证的结果，true表示验证通过，false验证失败
         if (valid) {
           // alert("表单验证成功"); // 
-          //发起ajax请求去后端做数据库的验证
-          //使用路由对象的push实现跳转
-          this.$router.push("/home");//使用路由对象的push实现跳转
+         //*********** */让ajax携带cookie证书
+         this.axios.defaults.withCredentials=true;
+          
+          this.axios.post(this.api+"/user/checkLogin",
+          this.qs.stringify(this.ruleForm2)
+          ).then(result=>{
+            console.log(result)
+           // {data: {…}, status: 200, statusText: "OK", headers: {…}, config: {…}, …}
+              if(result.data.isOK){
+                //登录成功
+                 this.$message({
+                      message: '恭喜你，'+result.data.msg,
+                      type: 'success'
+                   });
+                   this.$router.push("/home");
+              }else{
+                //登录失败
+                  this.$message.error(result.data.msg);
+              }
+              //使用路由对象的push实现跳转
+         // this.$router.push("/home");//使用路由对象的push实现跳转
+          }).catch(err=>{
+            //登录失败
+             this.$message.error('错了哦'+err.message);
+          })
+         
+        
         } else {
           console.log("×表单验证失败");
           return false;
@@ -84,29 +132,27 @@ export default {
 </script>
 
 <style scoped>
-#box{
+#box {
   background: url("../assets/images/login.jpg") no-repeat;
   background-size: 100%;
 }
-#login{
+#login {
   width: 500px;
   height: 300px;
   /* 水平、垂直绝对居中 */
   position: fixed;
   left: 0;
-  top:0;
+  top: 0;
   right: 0;
   bottom: 0;
   margin: auto;
 }
 /* scoped局部，如果不加，其他页面会受影响 */
-   .el-card__header{
-       padding: 0px 15px !important;
-   }
+.el-card__header {
+  padding: 0px 15px !important;
+}
 /* 登陆页面的宽度 */
-   .el-input{
-     width: 80%;
-   }
-
-
+.el-input {
+  width: 80%;
+}
 </style>

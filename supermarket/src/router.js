@@ -39,6 +39,14 @@ export default new Router({
     {//密码修改
       path:'/changepsw',
       component:()=>import(/*webpackChunkName:"PwdEdit"*/'./views/ChangePsw.vue')//动态导入组件
+    },
+    {//商品管理
+      path:'/goodsmsg',
+      component:()=>import(/*webpackChunkName:"PwdEdit"*/'./views/GoodsMsg.vue')//动态导入组件
+    },
+    {//增加商品
+      path:"/goodadd",
+      component:()=>import(/*webpackChunkName:"PwdEdit"*/'./views/GoodsAdd.vue')//动态导入组件
     }
   ]
 })

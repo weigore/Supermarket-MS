@@ -6,7 +6,7 @@
     <div id="asideTop">
       <h2>便利超市管理系统</h2>
       <p><span>您好</span>,admin</p>
-      <p><a href="#">管理首页</a> | <a href="#">退出系统</a></p>
+      <p><a href="#">管理首页</a> | <a href="javascript:void(0)" @click="loginOut()">退出系统</a></p>
     </div>
     <!--1.2 左侧导航菜单  -->
     <el-menu
@@ -32,8 +32,8 @@
           <span>商品管理</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="2-1">商品管理</el-menu-item>
-          <el-menu-item index="2-2">添加商品</el-menu-item>
+          <el-menu-item index="2-1"> <router-link to="goodsmsg">商品管理</router-link> </el-menu-item>
+          <el-menu-item index="2-2"><router-link to="goodadd"> 添加商品</router-link></el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <!-- 菜单三 -->
@@ -112,6 +112,21 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
+    },
+    loginOut(){
+      //发起ajax到后端路由去执行清除cookie的操作
+      this.axios.get("http://127.0.0.1:3000/user/loginOut").then(result=>{
+          //根据是否清除成功处理业务逻辑
+          this.$message({
+            message: '退出成功！ 欢迎下次登录!',
+            type: 'success'
+          });
+          //跳转到登录页面
+          this.$router.push("/");
+      }).catch(err=>{
+        console.log(err);
+      })
+
     }
   }
 };
